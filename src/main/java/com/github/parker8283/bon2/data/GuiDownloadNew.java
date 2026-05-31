@@ -1,36 +1,31 @@
 package com.github.parker8283.bon2.data;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.file.Files;
-import java.text.DateFormatSymbols;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import com.github.parker8283.bon2.data.VersionJson.MappingsJson;
+import com.github.parker8283.bon2.gui.*;
+import com.github.parker8283.bon2.io.AugmentedUrlInput;
+import com.github.parker8283.bon2.util.BONUtils;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.github.parker8283.bon2.data.VersionJson.MappingsJson;
-import com.github.parker8283.bon2.gui.GUIProgressListener;
-import com.github.parker8283.bon2.gui.RefreshListener;
-import com.github.parker8283.bon2.util.BONUtils;
-import com.google.common.collect.Lists;
+import javax.swing.tree.*;
+import java.awt.*;
+import java.io.*;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.file.Files;
+import java.text.DateFormatSymbols;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
 public class GuiDownloadNew extends JFrame {
     
-    private static final String MAPPINGS_URL_SNAPSHOT = "http://export.mcpbot.bspk.rs/mcp_snapshot/%1$s-%2$s/mcp_snapshot-%1$s-%2$s.zip";
-    private static final String MAPPINGS_URL_STABLE = "http://export.mcpbot.bspk.rs/mcp_stable/%1$s-%2$s/mcp_stable-%1$s-%2$s.zip";
+    private static final String MAPPINGS_URL_SNAPSHOT = "https://mcp.zeith.org/mcp_snapshot/%1$s-%2$s/mcp_snapshot-%1$s-%2$s.zip";
+    private static final String MAPPINGS_URL_STABLE = "https://mcp.zeith.org/mcp_stable/%1$s-%2$s/mcp_stable-%1$s-%2$s.zip";
     
     private static class MappingListEntry {
         public final boolean stable;
@@ -103,7 +98,7 @@ public class GuiDownloadNew extends JFrame {
             while (!urls.isEmpty()) {
                 MappingListEntry entry = urls.poll();
                 progress.setLabel("Downloading: " + entry.toString());
-                try (InputStream in = new URL(entry.url).openStream()) {
+                try (AugmentedUrlInput input = AugmentedUrlInput.open(entry.url).setDefaultUserAgent(); InputStream in = input.getInput()) {
                     File rootFolder = BONFiles.OCEANLABS_MCP_FOLDER;
                     File temp = rootFolder.toPath()
                             .resolve(entry.stable ? "mcp_stable" : "mcp_snapshot")

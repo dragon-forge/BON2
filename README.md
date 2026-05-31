@@ -1,6 +1,6 @@
-BON2 [![Build Status](http://ci.tterrag.com/buildStatus/icon?job=BON2)](http://ci.tterrag.com/job/BON2/)
+BON2, Still Alive
 ====
 
-A rewrite for Immibis's bearded-octo-nemesis for ForgeGradle.
+This is a simple patched BON2 app that uses `mcp.zeith.org` domain mirror over HTTPS instead of non-existent `export.mcpbot.bspk.rs`.
 
-Old releases available in releases tab. Newer releases available on [Jenkins](http://ci.tterrag.com/job/BON2/).
+Download the patched version in the releases tab.
